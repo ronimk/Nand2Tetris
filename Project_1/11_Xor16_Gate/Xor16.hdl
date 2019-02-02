@@ -1,0 +1,15 @@
+/**
+ * 16-bit Xor:
+ * for i = 0..15 out[i] = (a[i] xor b[i])
+ */
+
+CHIP Xor16 {
+	IN a[16], b[16];
+	OUT out[16];
+	
+	PARTS:
+	Nand16(a=a, b=b, out=o0);
+	Nand16(a=a, b=o0, out=o1);
+	Nand16(a=b, b=o0, out=o2);
+	Nand16(a=o1, b=o2, out=out);
+}

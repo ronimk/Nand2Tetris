@@ -1,0 +1,15 @@
+ /**
+ * 3-state And gate:
+ * out = 1 if (a == 1, b == 1 and c== 1)
+ *       0 otherwise
+ */
+
+CHIP TriStateAnd {
+    IN a, b, c;
+    OUT out;
+
+    PARTS:
+    // Put your code here:
+  	And(a=a, b=b, out=aANDb);
+	  And(a=c, b=aANDb, out=out);
+}

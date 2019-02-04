@@ -3,7 +3,7 @@ My solutions to Nand2Tetris course projects
 
 Deadlines for my own convenience:
 
-Project 1:  4.2.2019
+Project 1:  4.2.2019 -- (DONE 4.2.2019)
 
 Project 2: 11.2.2019
 

@@ -1,0 +1,47 @@
+// The implementation source: http://www.cs.sfu.ca/CourseCentral/150/eyal/lectures/CLA.pdf
+
+CHIP CarryLookahead4Bit {
+
+IN c0, p0, p1, p2, p3, g0, g1, g2, g3;
+OUT c1, c2, c3, G, P;
+
+PARTS:
+
+	// First, determine p0p1, p2p3, p1p2, c0p0 and g0p1:
+	And(a=p0, b=p1, out=p0p1);
+	And(a=p2, b=p3, out=p2p3);
+	And(a=p1, b=p2, out=p1p2);
+	And(a=c0, b=p0, out=c0p0);
+	And(a=g0, b=p1, out=g0p1);
+	
+	// Then, determine P and G:
+	
+	// 1. P = p0p1p2p3
+	And(a=p0p1, b=p2p3, out=P);
+
+	// 2. G = g0p1p2p3 + g1p2p3 + g2p3 + g3:
+	And(a=g0p1, b=p2p3, out=g0p1p2p3);
+	And(a=g1, b=p2p3, out=g1p2p3);
+	Or(a=g0p1p2p3, b=g1p2p3, out=g0p1p2p3ORg1p2p3);
+	And(a=g2, b=p3, out=g2p3);
+	Or(a=g2p3, b=g3, out=g2p3ORg3);
+	Or(a=g0p1p2p3ORg1p2p3, b=g2p3ORg3, out=G);
+	
+	
+	// Finally, calculate all cs:
+	// c1 = c0p0 + g0:
+	Or(a=c0p0, b=g0, out=c1);
+	
+	// c2 = c0p0p1 + g0p1 + g1:
+	And(a=c0p0, b=p1, out=c0p0p1);
+	Or(a=g0p1, b=g1, out=g0p1ORg1);
+	Or(a=c0p0p1, b=g0p1ORg1, out=c2);
+	
+	// c3 = c0p0p1p2 + g0p1p2 + g1p2 + g2:
+	And(a=g1, b=p2, out=g1p2);
+	And(a=g0, b=p1p2, out=g0p1p2);
+	And(a=c0p0, b=p1p2, out=c0p0p1p2);
+	Or(a=g1p2, b=g2, out=g1p2ORg2);
+	Or(a=c0p0p1p2, b=g0p1p2, out=c0p0p1p2ORg0p1p2);
+	Or(a=c0p0p1p2ORg0p1p2, b=g1p2ORg2, out=c3);
+}

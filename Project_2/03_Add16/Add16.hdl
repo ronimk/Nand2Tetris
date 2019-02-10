@@ -1,3 +1,125 @@
-// Add16 using a carry look-ahead technique:
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/02/Adder16.hdl
 
-// under construction
+/**
+ * Adds two 16-bit values using a carry look-ahead technique.
+ * The most significant carry bit is ignored.
+ * source: http://www.cs.sfu.ca/CourseCentral/150/eyal/lectures/CLA.pdf
+ */
+
+CHIP Add16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+   // Put you code here:
+   
+   // First, calculate p0..p15:
+   Xor(a=a[0], b=b[0], out=p0);
+   Xor(a=a[1], b=b[1], out=p1);
+   Xor(a=a[2], b=b[2], out=p2);
+   Xor(a=a[3], b=b[3], out=p3);
+   Xor(a=a[4], b=b[4], out=p4);
+   Xor(a=a[5], b=b[5], out=p5);
+   Xor(a=a[6], b=b[6], out=p6);
+   Xor(a=a[7], b=b[7], out=p7);
+   Xor(a=a[8], b=b[8], out=p8);
+   Xor(a=a[9], b=b[9], out=p9);
+   Xor(a=a[10], b=b[10], out=p10);
+   Xor(a=a[11], b=b[11], out=p11);
+   Xor(a=a[12], b=b[12], out=p12);
+   Xor(a=a[13], b=b[13], out=p13);
+   Xor(a=a[14], b=b[14], out=p14);
+   Xor(a=a[15], b=b[15], out=p15);
+   
+   // Next, calculate g0..g15:
+   And(a=a[0], b=b[0], out=g0);
+   And(a=a[1], b=b[1], out=g1);
+   And(a=a[2], b=b[2], out=g2);
+   And(a=a[3], b=b[3], out=g3);
+   And(a=a[4], b=b[4], out=g4);
+   And(a=a[5], b=b[5], out=g5);
+   And(a=a[6], b=b[6], out=g6);
+   And(a=a[7], b=b[7], out=g7);
+   And(a=a[8], b=b[8], out=g8);
+   And(a=a[9], b=b[9], out=g9);
+   And(a=a[10], b=b[10], out=g10);
+   And(a=a[11], b=b[11], out=g11);
+   And(a=a[12], b=b[12], out=g12);
+   And(a=a[13], b=b[13], out=g13);
+   And(a=a[14], b=b[14], out=g14);
+   And(a=a[15], b=b[15], out=g15);
+   
+   // Next, arrange the 4 second-level CarryLookahead Chips:
+   // all the G and P outputs are fed to the third level CarryLookahead Chip - except for P3, which is not needed.
+   // it is not needed because this particular Add16-chip ignores its final carry bit.
+   // The three c-outputs calculated by each 2nd-level CarryLookahead-chip is fed to the next adder linked
+   // to that particular CarryLookahead-chip.
+
+   // The first CarryLookahead-chip calculates the carries of the adders for a[1..3] and b[1..3] bits:
+   CarryLookahead4Bit(c0=false, p0=p0, p1=p1, p2=p2, p3=p3, g0=g0, g1=g1, g2=g2, g3=g3, c1=c1, c2=c2, c3=c3, G=G0, P=P0);
+   // The G0 and P0 are fed to the upper-level CarryLookahead to calculate c4, which in turn "starts up" the second
+   // level 2 CarryLookahead.
+   
+   // The second CarryLookahead-chip calculates the carries of the adders for a[5..7] and b[5..7] bits:
+   CarryLookahead4Bit(c0=c4, p0=p4, p1=p5, p2=p6, p3=p7, g0=g4, g1=g5, g2=g6, g3=g7, c1=c5, c2=c6, c3=c7, G=G1, P=P1);
+   // The G1 and P1 are fed to the upper-level CarryLookahead to calculate c8, which in turn "starts up" the third
+   // level 2 CarryLookahead.
+   
+   // The third CarryLookahead-chip calculates the carries of the adders for a[9..11] and b[9..11] bits:
+   CarryLookahead4Bit(c0=c8, p0=p8, p1=p9, p2=p10, p3=p11, g0=g8, g1=g9, g2=g10, g3=g11, c1=c9, c2=c10, c3=c11, G=G2, P=P2);
+   // The G2 and P2 are fed to the upper-level CarryLookahead to calculate c12, which in turn "starts up" the fourth
+   // level 2 CarryLookahead.
+   
+   // The fourth CarryLookahead-chip calculates the carries of the adders for a[13..15] and b[13..15] bits:
+   CarryLookahead4Bit(c0=c12, p0=p12, p1=p13, p2=p14, p3=p15, g0=g12, g1=g13, g2=g14, g3=g15, c1=c13, c2=c14, c3=c15, G=G3, P=P3);
+   
+   
+   // The third-level CarryLookahead chip has to be implemented "manually"
+   // to avoid a circle in the hdl-interpreter used:
+   // On a plus side, implementing it manually reduces the circuit complexity a bit
+   // because there is no need to calculate the final carry: This particular Add16-chip
+   // ignores the final carry completely.
+
+   // First, calculate c4:
+   // c4 = c0P0 + G0
+   And(a=false, b=P0, out=c0P0);
+   Or(a=c0P0, b=G0, out=c4);
+	
+   // Then, calculate c8:
+   // c8 = c0P0P1 + G0P1 + G1
+   And(a=c0P0, b=P1, out=c0P0P1);
+   And(a=G0, b=P1, out=G0P1);
+   Or(a=G0P1, b=G1, out=G0P1ORG1);
+   Or(a=c0P0P1, b=G0P1ORG1, out=c8);
+   
+   // Next, calculate c12:
+   // c12 = c0P0P1P2 + G0P1P2 + G1P2 + G2
+   And(a=c0P0P1, b=P2, out=c0P0P1P2);
+   And(a=G0P1, b=P2, out=G0P1P2);
+   And(a=G1, b=P2, out=G1P2);
+   Or(a=c0P0P1P2, b=G0P1P2, out=c0P0P1P2ORG0P1P2);
+   Or(a=G1P2, b=G2, out=G1P2ORG2);
+   Or(a=c0P0P1P2ORG0P1P2, b=G1P2ORG2, out=c12); 
+	
+   
+   // Finally arrange all the first-level FullAdders:
+   FullAdder(a=a[0], b=b[0], c=false, sum=out[0], carry=c000);
+   FullAdder(a=a[1], b=b[1], c=c1, sum=out[1], carry=c001);
+   FullAdder(a=a[2], b=b[2], c=c2, sum=out[2], carry=c002);
+   FullAdder(a=a[3], b=b[3], c=c3, sum=out[3], carry=c003);
+   FullAdder(a=a[4], b=b[4], c=c4, sum=out[4], carry=c004);
+   FullAdder(a=a[5], b=b[5], c=c5, sum=out[5], carry=c005);
+   FullAdder(a=a[6], b=b[6], c=c6, sum=out[6], carry=c006);
+   FullAdder(a=a[7], b=b[7], c=c7, sum=out[7], carry=c007);
+   FullAdder(a=a[8], b=b[8], c=c8, sum=out[8], carry=c008);
+   FullAdder(a=a[9], b=b[9], c=c9, sum=out[9], carry=c009);
+   FullAdder(a=a[10], b=b[10], c=c10, sum=out[10], carry=c010);
+   FullAdder(a=a[11], b=b[11], c=c11, sum=out[11], carry=c011);
+   FullAdder(a=a[12], b=b[12], c=c12, sum=out[12], carry=c012);
+   FullAdder(a=a[13], b=b[13], c=c13, sum=out[13], carry=c013);
+   FullAdder(a=a[14], b=b[14], c=c14, sum=out[14], carry=c014);
+   FullAdder(a=a[15], b=b[15], c=c15, sum=out[15], carry=c015);
+}

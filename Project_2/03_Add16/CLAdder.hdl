@@ -2,6 +2,10 @@
  * Computes the sum of three bits.
  * Used for 16-bit addition with
  * Carry-Lookahead.
+ * Simplifies the Add16-chip
+ * greatly by removing
+ * 48 unnecessary logic gates
+ * and 16 unused carry outputs.
  * 
  */
 

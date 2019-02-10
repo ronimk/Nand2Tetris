@@ -1,0 +1,16 @@
+/**
+ * Computes the sum of three bits.
+ * Used for 16-bit addition with
+ * Carry-Lookahead.
+ * 
+ */
+
+CHIP CLAdder {
+    IN a, b, c;  // 1-bit inputs
+    OUT sum;	 // the carry-bit is ignored
+
+    PARTS:
+    // Put your code here:
+	Xor(a=a,  b=b, out=s1);
+	Xor(a=s1, b=c, out=sum);
+}

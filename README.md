@@ -5,7 +5,7 @@ Deadlines for my own convenience:
 
 Project 1:  4.2.2019 -- (FINISHED: 4.2.2019)
 
-Project 2: 11.2.2019
+Project 2: 11.2.2019 -- (FINISHED 11.2.2019)
 
 Project 3: 18.2.2019
 

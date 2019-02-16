@@ -31,7 +31,7 @@ CHIP RAM64 {
 	// the first DMux gate and the last Mux gate.
     // (It was actually fun and a rather illuminating little exercise to
 	//  try a different addressing scheme using address[1..3] for the cell
-	//  selection and the the first, fourth and fifth bits for the bank
+	//  selection and the the first, fifth and sixth bits for the bank
 	//  selection.
 	
 	DMux8Way(in=load, sel=address[3..5], a=loadb0, b=loadb1, c=loadb2, d=loadb3, e=loadb4, f=loadb5, g=loadb6, h=loadb7);

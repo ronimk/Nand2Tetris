@@ -1,0 +1,50 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/a/RAM64.hdl
+
+/**
+ * Memory of 64 registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+
+CHIP RAM64 {
+    IN in[16], load, address[6];
+    OUT out[16];
+
+    PARTS:
+    // Put your code here:
+	
+	// address-bits 3-5 select the desired memory bank:
+	// address[3..5] == 000, the selected memory bank is the first RAM8
+	// address[3..5] == 001, the selected memory bank is the second RAM8
+	// ...
+	// address[3..5] == 110, the selected memory bank is the seventh RAM8
+	// address[3..5] == 111, the selected memory bank is the eighth RAM8
+	//
+	// address[0..2] selects the approppriate cell within the bank
+	//
+	// of course any other choice for addressing would have resulted in
+	// a correct implementation as long as it had been consistent between
+	// the first DMux gate and the last Mux gate.
+    // (It was actually fun and a rather illuminating little exercise to
+	//  try a different addressing scheme using address[1..3] for the cell
+	//  selection and the the first, fourth and fifth bits for the bank
+	//  selection.
+	
+	DMux8Way(in=load, sel=address[3..5], a=loadb0, b=loadb1, c=loadb2, d=loadb3, e=loadb4, f=loadb5, g=loadb6, h=loadb7);
+	
+	RAM8(in=in, load=loadb0, address=address[0..2], out=datab0);
+	RAM8(in=in, load=loadb1, address=address[0..2], out=datab1);
+	RAM8(in=in, load=loadb2, address=address[0..2], out=datab2);
+	RAM8(in=in, load=loadb3, address=address[0..2], out=datab3);
+	RAM8(in=in, load=loadb4, address=address[0..2], out=datab4);
+	RAM8(in=in, load=loadb5, address=address[0..2], out=datab5);
+	RAM8(in=in, load=loadb6, address=address[0..2], out=datab6);
+	RAM8(in=in, load=loadb7, address=address[0..2], out=datab7);
+	
+	// Finally, select the output:
+	Mux8Way16(a=datab0, b=datab1, c=datab2, d=datab3, e=datab4, f=datab5, g=datab6, h=datab7, sel=address[3..5], out=out);
+}

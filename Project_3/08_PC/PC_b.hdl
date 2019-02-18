@@ -18,19 +18,21 @@ CHIP PC {
     PARTS:
     // Put your code here:
 	
-		// The 3-CHIP solution:
-	Mux8Way16(a=oldVal, b=false, c=in, d=false, e=ovPlus1, f=false, g=in, h=false, sel[0]=reset, sel[1]=load, sel[2]=inc, out=inPC);
+	// The 3-CHIP solution:
+	Mux8Way16(a=oldVal, b=ovPlus1, c=in, d=in, e=false, f=false, g=false, h=false, sel[0]=inc, sel[1]=load, sel[2]=reset, out=inPC);
 	Register(in=inPC, load=true, out=out, out=oldVal);
 	Inc16(in=oldVal, out=ovPlus1);
 	
 	/* The Mux logic:
 	 *
 	 * inPC is "oldVal" if and only if (reset == load == inc == 0) (in other words, when sel == 000)
+	 * inPC is "ovPlus1" if inc == 1, but load == 0 AND reset == 0 -> when sel == 001
+	 * inPC is "in" if load == 1, but reset == 0 - which happens exactly when sel == (010 || 011)
+	 * Finally,
 	 * inPC is 0 if reset == 1 - which happens when the sel of Mux8Way16 is:
-	 *														001
-	 *														011
+	 *														100
+	 *														110
 	 *														101
 	 *													OR	111
-	 * inPC is "in" if load == 1, but reset == 0 - which happens exactly when sel == (010 || 110)
-	 * inPC is "ovPlus1" if inc == 1, but load == 0 AND reset == 0 -> when sel == 100. */
+	 */
 }

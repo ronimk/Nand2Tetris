@@ -1,0 +1,36 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/a/PC.hdl
+
+/**
+ * A 16-bit counter with load and reset control bits.
+ * if      (reset[t] == 1) out[t+1] = 0
+ * else if (load[t] == 1)  out[t+1] = in[t]
+ * else if (inc[t] == 1)   out[t+1] = out[t] + 1  (integer addition)
+ * else                    out[t+1] = out[t]
+ */
+
+CHIP PC {
+    IN in[16],load,inc,reset;
+    OUT out[16];
+
+    PARTS:
+    // Put your code here:
+	
+		// The 3-CHIP solution:
+	Mux8Way16(a=oldVal, b=false, c=in, d=false, e=ovPlus1, f=false, g=in, h=false, sel[0]=reset, sel[1]=load, sel[2]=inc, out=inPC);
+	Register(in=inPC, load=true, out=out, out=oldVal);
+	Inc16(in=oldVal, out=ovPlus1);
+	
+	/* The Mux logic:
+	 *
+	 * inPC is "oldVal" if and only if (reset == load == inc == 0) (in other words, when sel == 000)
+	 * inPC is 0 if reset == 1 - which happens when the sel of Mux8Way16 is:
+	 *														001
+	 *														011
+	 *														101
+	 *													OR	111
+	 * inPC is "in" if load == 1, but reset == 0 - which happens exactly when sel == (010 || 110)
+	 * inPC is "ovPlus1" if inc == 1, but load == 0 AND reset == 0 -> when sel == 100. */
+}

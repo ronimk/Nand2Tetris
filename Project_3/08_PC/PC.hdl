@@ -1,0 +1,33 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/a/PC.hdl
+
+/**
+ * A 16-bit counter with load and reset control bits.
+ * if      (reset[t] == 1) out[t+1] = 0
+ * else if (load[t] == 1)  out[t+1] = in[t]
+ * else if (inc[t] == 1)   out[t+1] = out[t] + 1  (integer addition)
+ * else                    out[t+1] = out[t]
+ */
+
+CHIP PC {
+    IN in[16],load,inc,reset;
+    OUT out[16];
+
+    PARTS:
+    // Put your code here:
+	
+	Mux16(a=oldVal, b=ovPlus1, sel=inc, out=in1);
+	Mux16(a=in1, b=in, sel=load, out=in2);
+	Mux16(a=in2, b=false, sel=reset, out=inPC);
+	
+	Register(in=inPC, load=true, out=out, out=oldVal);
+	Inc16(in=oldVal, out=ovPlus1);
+	
+	// another solution (in PC_b.hdl) uses Mux8Way16 to select the
+	// next value of PC, and manages to do it in 3 chips only.
+	// however, this is more efficient solution since the number of internal
+	// Mux-gates is significantly less (3 versus 7).
+	// This solution might be even a little bit more understandable, despite the two extra chips.
+}

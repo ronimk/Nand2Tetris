@@ -14,7 +14,8 @@
 // Put your code here.
 
 // This version is unnecessarily complicated for one reason only:
-// I wanted to practice how to write a subroutine in HACK machine language.
+// I wanted to practice how to write a subroutine in HACK machine language
+// with the info provided in chapter 4 (= not using stacks).
 // Both the Pixel fill routine and the advance routine have been isolated
 // into their own "subroutines". (Since the handling of the return address
 // is very limited, one can argue that these are not real subroutines).

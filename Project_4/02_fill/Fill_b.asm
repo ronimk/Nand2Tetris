@@ -15,10 +15,10 @@
 
 // This version is unnecessarily complicated for one reason only:
 // I wanted to practice how to write a subroutine in HACK machine language
-// with the info provided in chapter 4 (= not using stacks).
+// with the info provided in chapter 4 (= not using a stack).
 // Both the Pixel fill routine and the advance routine have been isolated
 // into their own "subroutines". (Since the handling of the return address
-// is very limited, one can argue that these are not real subroutines).
+// is very limited without a stack, one can argue that these are not real subroutines).
 
 // 1) The first memory location of the screen is 16384.
 // 2) There are 32 memory addresses per line on the screen and there are 256 lines.

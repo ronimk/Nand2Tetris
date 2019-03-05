@@ -12,7 +12,7 @@ Project 3: 18.2.2019 -- (FINISHED 18.2.2019)
 
 Project 4: 25.2.2019 -- (FINISHED 20.2.2019)
 
-Project 5:  4.3.2019
+Project 5:  4.3.2019 -- (FINISHED 5.3.2019)
 
 Project 6: 11.3.2019
 

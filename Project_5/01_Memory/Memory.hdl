@@ -1,0 +1,40 @@
+/**
+ * The complete address space of the Hack computer's memory,
+ * including RAM and memory-mapped I/O. 
+ * The chip facilitates read and write operations, as follows:
+ *     Read:  out(t) = Memory[address(t)](t)
+ *     Write: if load(t-1) then Memory[address(t-1)](t) = in(t-1)
+ * In words: the chip always outputs the value stored at the memory 
+ * location specified by address. If load==1, the in value is loaded 
+ * into the memory location specified by address. This value becomes 
+ * available through the out output from the next time step onward.
+ * Address space rules:
+ * Only the upper 16K+8K+1 words of the Memory chip are used. 
+ * Access to address>0x6000 is invalid. Access to any address in 
+ * the range 0x4000-0x5FFF results in accessing the screen memory 
+ * map. Access to address 0x6000 results in accessing the keyboard 
+ * memory map. The behavior in these addresses is described in the 
+ * Screen and Keyboard chip specifications given in the book.
+ */
+
+CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+
+    PARTS:
+	
+	// First, select load bits for each memory section, based on the RAM address being referenced
+	// for the type of memory being addressed (MEM16K, Screen), the load bit is the 'load' input,
+	// for others it's 0. Of course for Keyboard there is no load bit:
+	DMux(sel=address[14], in=load, a=MEMload, b=PHERIPload);
+	Nand(a=address[14], b=address[13], out=NOTKeyb);	// if both address[14] bit and address[15] bit is set, Keyboard address (0x6FFF is referenced
+	And(a=PHERIPload, b=NOTKeyb, out=SCRload);
+	
+	RAM16K(load=MEMload, in=in, address=address[0..13], out=MEMout);
+	Screen(load=SCRload, in=in, address=address[0..12], out=SCRout);
+	Keyboard(out=KEYout);
+	
+	// Finally select the proper out-value based on the memory address being referenced:
+	Mux16(a=KEYout, b= SCRout, sel=NOTKeyb, out=PHERIPout);
+	Mux16(a=MEMout, b=PHERIPout, sel=address[14], out=out);
+}

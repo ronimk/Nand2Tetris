@@ -20,6 +20,6 @@ Project 6 - postponed deadline: 15.4.2019*
   
 The rest of the book's projects will be completed during summer and fall 2019
 
-* The spring semester has been more meddlesome than I had anticipated. The assembler is functionally ready, but it needs a bit more testing and fine-tuning still. I also decided to program it in CLISP and decided to approach it as my first professional-quality LISP-program, so getting to know well enough the insides of the Common Lisp packages and a few other previously unfamiliar parts of Common LISP took some time, too.
+* The spring semester has taken a bit more work than I had anticipated. The assembler is functionally ready, but it needs a bit more testing and fine-tuning still. I also decided to program it in CLISP and decided to approach it as my first professional-quality LISP-program, so getting to know well enough the insides of the Common Lisp packages and a few other previously unfamiliar parts of Common LISP took some time, too.
 
 The assembler should be finally ready by 15.4.

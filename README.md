@@ -14,20 +14,12 @@ Project 4: 25.2.2019 -- (FINISHED 20.2.2019)
 
 Project 5:  4.3.2019 -- (FINISHED 5.3.2019)
 
-Project 6: 11.3.2019
+Project 6 - postponed deadline: 15.4.2019*
 
 |break|
   
-Project 7:   1.4.2019
+The rest of the book's projects will be completed during summer and fall 2019
 
-Project 8:  15.4.2019
+* The spring semester has been more meddlesome than I had anticipated. The assembler is functionally ready, but it needs a bit more testing and fine-tuning still. I also decided to program it in CLISP and decided to approach it as my first professional-quality LISP-program, so getting to know well enough the insides of the Common Lisp packages and a few other previously unfamiliar parts of Common LISP took some time, too.
 
-Project 9:  29.4.2019
-
-Project 10: 13.5.2019
-
-Project 11: 27.5.2019
-
-Project 12: 10.6.2019
-
-Project 13: 24.6.2019
+The assembler should be finally ready by 15.4.

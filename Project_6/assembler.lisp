@@ -1,5 +1,5 @@
 ;;;; This is the main program file
-;;;; its public interface consists of:
+;;;; Its public interface consists of:
 ;;;;     assemble - the main function used to assemble an ASM-file
 ;;;;     ASSEMBLED - an atom returned as a result of a succesful assemble process.
 

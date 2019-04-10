@@ -1,5 +1,5 @@
 ;;;; This is a parser for the Hack-machine assembler
-;;;; It's public interface consists of the following
+;;;; Its public interface consists of the following
 ;;;; symbols and functions:
 ;;;;
 ;;;; symbols used to identify the type of the current expression:

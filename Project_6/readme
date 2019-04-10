@@ -10,4 +10,4 @@ The result is output to similarly named file_name.hack -file in the same directo
 
 I hadn't done much string manipulation in Common LISP in a long time, as probably can be seen by looking at the code, so getting re-familiarized with the most common string manipulation functions took a bit longer than I had anticipated, as did familiarizing myself with the Common LISP package system.
 
-The project itself was tons of fun and getting to work with LISP after a bit of a hiatus was really refreshing. It still could have been finalized into an executable program, and maybe I will do so in the near future. At the moment my free time is being spent on other, more important projects, however.
+The project itself was tons of fun and getting to work with LISP after a bit of a hiatus was really refreshing. It still could have been finalized into an executable program, and maybe I will do so in the near future. However, at the moment my free time is being spent on other, more important school projects.

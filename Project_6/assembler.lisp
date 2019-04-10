@@ -1,11 +1,11 @@
-;;;; The main program.
-;;;; Its public interface consists of:
-;;;; assemble - the main assembler function
-;;;; assembled - an atom returned by the assembling process when done.
+;;;; This is the main program file
+;;;; its public interface consists of:
+;;;;     assemble - the main function used to assemble an ASM-file
+;;;;     ASSEMBLED - an atom returned as a result of a succesful assemble process.
 
 (defpackage "ASSEMBLER"
-		    (:use "PARSER" "CL")
-			(:export "ASSEMBLE" "ASSEMBLED") )
+            (:use "PARSER" "CL")
+            (:export "ASSEMBLE" "ASSEMBLED") )
 (in-package "ASSEMBLER")
 
 
@@ -73,16 +73,16 @@
 ; already has an association in the Symbol-table - if :error-if-duplicate is explicitly
 ; set to nil, no error occurs and the symbol-table stays the same.
 ; Examples:
-; 		given: "LOOP" 25 nil 												 expect: '(("LOOP" . 25))
-;		given: "LOOP" 34 '(("LOOP" . 25))									 expect: (error "LOOP: symbol already introduced")
-;		given: "i" 51 '(("LOOP" . 25)) :error-if-duplicate nil				 expect '(("i" . 51) ("LOOP" . 25))
-;		given: "i" 40 '(("i" . 51) ("LOOP" . 25)) :error-if-duplicate nil	 expect '(("i" . 51) ("LOOP" . 25))
+;       given: "LOOP" 25 nil                                                 expect: '(("LOOP" . 25))
+;       given: "LOOP" 34 '(("LOOP" . 25))                                    expect: (error "LOOP: symbol already introduced")
+;       given: "i" 51 '(("LOOP" . 25)) :error-if-duplicate nil               expect '(("i" . 51) ("LOOP" . 25))
+;       given: "i" 40 '(("i" . 51) ("LOOP" . 25)) :error-if-duplicate nil    expect '(("i" . 51) ("LOOP" . 25))
 (defun append-table (symbol address symbol-table &key (error-if-duplicate T))
   (if (assoc symbol symbol-table :test #'string=)
-	  (if error-if-duplicate
-	     (error "~A: symbol already introduced" symbol)
-		 symbol-table )
-	  (acons symbol address symbol-table) ) )
+      (if error-if-duplicate
+         (error "~A: symbol already introduced" symbol)
+         symbol-table )
+      (acons symbol address symbol-table) ) )
 
 ; String -> ROM-table RAM-table
 ; Finds the address of an a-expression variable
@@ -90,13 +90,13 @@
 ; ROM-instruction memory location or a RAM-data
 ; memory location.
 ; examples:
-;	given "LOOP" '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect 15
-;	given "i"  '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect 10
-;	given "LOOP2" '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect nil
-;	given "$Var"  '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect nil
+;   given "LOOP" '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect 15
+;   given "i"  '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect 10
+;   given "LOOP2" '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect nil
+;   given "$Var"  '(("START" . 0) ("LOOP" . 15) ("END" . 20)) '(("i" . 10)), expect nil
 (defun variable-address (val rom-table ram-table)
   (or (cdr (assoc val rom-table :test #'string=))
-	  (cdr (assoc val ram-table :test #'string=)) ) )
+      (cdr (assoc val ram-table :test #'string=)) ) )
 
 ;;; The assembler functions:
 
@@ -113,28 +113,28 @@
 ; ROM-memory addresses.
 (defun translate-labels (file rom-table)
   (flet ((code-line (exp-type)
-		    (or (equal exp-type 'C-EXP)
-			    (equal exp-type 'A-EXP) ) )
-		 (label-line (exp-type)
-			(equal exp-type 'L-EXP) ) )
+            (or (equal exp-type 'C-EXP)
+                (equal exp-type 'A-EXP) ) )
+         (label-line (exp-type)
+            (equal exp-type 'L-EXP) ) )
     (with-open-file (readf file :direction :input)
       (do* ((line (read-line readf nil)
-				  (read-line readf nil) )
-		    (trimmed-line (trim-line line)
-						  (trim-line line) )
-			(exp-type (exp-type trimmed-line)
-					  (exp-type trimmed-line) )
+                  (read-line readf nil) )
+            (trimmed-line (trim-line line)
+                          (trim-line line) )
+            (exp-type (exp-type trimmed-line)
+                      (exp-type trimmed-line) )
             (curr-line-num (if (code-line exp-type) 0 -1) (if (code-line exp-type) (1+ curr-line-num) curr-line-num)) )
             ((null line) rom-table)
         (if (label-line exp-type)
-		    (let ((label (label->symbol trimmed-line)))
-			  (if (variable-address label nil *RAM-TABLE*)
-				  (error "[illegal label name ~a]: ~a" label trimmed-line)
-				  (setf rom-table (append-table label
-												(1+ curr-line-num)
-												rom-table )) ) )
-			nil ) ) ) ) )
-			
+            (let ((label (label->symbol trimmed-line)))
+              (if (variable-address label nil *RAM-TABLE*)
+                  (error "[illegal label name ~a]: ~a" label trimmed-line)
+                  (setf rom-table (append-table label
+                                                (1+ curr-line-num)
+                                                rom-table )) ) )
+            nil ) ) ) ) )
+            
 ; String ROM-table RAM-table
 ; assembles the given .asm file into an identically named .hack-file
 ; with the given ROM-Memory table that contains all the label->code-address
@@ -142,46 +142,46 @@
 ; variable->data-address translations.
 (defun assemble-file (file rom-table ram-table)
   (labels ((assemble-a-val (val)
-			(if (numberp val)
-				(fill-zeroes (write-to-string val :base 2))
-				(let ((addr (variable-address val rom-table ram-table)))
-				  (if addr
-					  (assemble-a-val addr)
-					  (if (<= *FIRST-FREE-MEMLOC* *LAST-FREE-MEMLOC*)
-						(progn
-						  (setf ram-table (append-table val *FIRST-FREE-MEMLOC* ram-table))
-						  (setf *FIRST-FREE-MEMLOC* (1+ *FIRST-FREE-MEMLOC*))
-						  (assemble-a-val (1- *FIRST-FREE-MEMLOC*)) )
-						(progn
-						  (error "Insufficient memory") ) ) ) ) ) )
-		   (assemble-c-exp (c-exp)
-		     (concatenate 'string "111"
-								  (comp->bits (comp c-exp))
-								  (dest->bits (dest c-exp))
-								  (jump->bits (jump c-exp)) ) )
-		   (fill-zeroes (bin#str)
-		     (concatenate 'string (make-string (- 16 (length bin#str)) :initial-element #\0)
-						  bin#str ) ) )
+            (if (numberp val)
+                (fill-zeroes (write-to-string val :base 2))
+                (let ((addr (variable-address val rom-table ram-table)))
+                  (if addr
+                      (assemble-a-val addr)
+                      (if (<= *FIRST-FREE-MEMLOC* *LAST-FREE-MEMLOC*)
+                        (progn
+                          (setf ram-table (append-table val *FIRST-FREE-MEMLOC* ram-table))
+                          (setf *FIRST-FREE-MEMLOC* (1+ *FIRST-FREE-MEMLOC*))
+                          (assemble-a-val (1- *FIRST-FREE-MEMLOC*)) )
+                        (progn
+                          (error "Insufficient memory") ) ) ) ) ) )
+           (assemble-c-exp (c-exp)
+             (concatenate 'string "111"
+                                  (comp->bits (comp c-exp))
+                                  (dest->bits (dest c-exp))
+                                  (jump->bits (jump c-exp)) ) )
+           (fill-zeroes (bin#str)
+             (concatenate 'string (make-string (- 16 (length bin#str)) :initial-element #\0)
+                          bin#str ) ) )
     (with-open-file (readf file :direction :input)
       (with-open-file (writef (target-file file)
-				              :direction :output
-							  :if-exists :supersede
-							  :if-does-not-exist :create )
+                              :direction :output
+                              :if-exists :supersede
+                              :if-does-not-exist :create )
         (do* ((line (read-line readf nil)
-				    (read-line readf nil) )
-			  (trimmed-line (trim-line line)
-						    (trim-line line) )
-			  (exp-type (exp-type trimmed-line)
-					    (exp-type trimmed-line) )
-			  (total-line-num 1 (1+ total-line-num))
+                    (read-line readf nil) )
+              (trimmed-line (trim-line line)
+                            (trim-line line) )
+              (exp-type (exp-type trimmed-line)
+                        (exp-type trimmed-line) )
+              (total-line-num 1 (1+ total-line-num))
               (code-line-num  1 (if (or (equal exp-type 'A-EXP)
-							            (equal exp-type 'C-EXP) )
-							        (1+ code-line-num)
-							        code-line-num )) )
+                                        (equal exp-type 'C-EXP) )
+                                    (1+ code-line-num)
+                                    code-line-num )) )
               ((null line) 'ASSEMBLED)
           (case exp-type
-		    ((NO-EXP L-EXP) nil )
-		    (A-EXP
-		      (write-line (assemble-a-val (a-value trimmed-line)) writef) )
-		    (C-EXP (write-line (assemble-c-exp trimmed-line) writef))
-		    (INVALID-EXP (error "[Line ~a] BAD OPCODE: ~a" total-line-num trimmed-line)) ) ) ) ) ) )
+            ((NO-EXP L-EXP) nil )
+            (A-EXP
+              (write-line (assemble-a-val (a-value trimmed-line)) writef) )
+            (C-EXP (write-line (assemble-c-exp trimmed-line) writef))
+            (INVALID-EXP (error "[Line ~a] BAD OPCODE: ~a" total-line-num trimmed-line)) ) ) ) ) ) )

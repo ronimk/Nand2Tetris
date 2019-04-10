@@ -1,4 +1,4 @@
-The assembler projects consists of two separate lisp source files created and tested using CLISP.'
+The assembler projects consists of two separate lisp source files created and tested using CLISP in a Windows machine.'
 
 The first is parser.lisp, which handles all the file parsing -related tasks
 The second is assembler.lisp, which handles the assembling part

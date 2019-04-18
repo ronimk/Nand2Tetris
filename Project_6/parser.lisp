@@ -163,7 +163,7 @@
 ; Examples:
 ;       given "@20",   expect 20
 ;       given "@LOOP", expect "LOOP"
-;       given "@0R
+;       given "@0R",   expect error "Illegal variable: 0R"
 (defun a-value (a-exp)
   (let* ((val (subseq a-exp 1))
          (parsed-number (parse-integer val :junk-allowed T)) )

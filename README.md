@@ -15,7 +15,3 @@ Project 4: 25.2.2019 -- (FINISHED 20.2.2019)
 Project 5:  4.3.2019 -- (FINISHED 5.3.2019)
 
 Project 6 - postponed deadline: 15.4.2019 -- (FINISHED 10.4.2019)
-
-|break|
-  
-The rest of the book's projects will be completed during summer and fall 2019
